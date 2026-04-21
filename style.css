@@ -1,18 +1,23 @@
 body {
     margin: 0;
-    background: black;
+    background: radial-gradient(circle at center, #050505 0%, #000000 70%);
     overflow: hidden;
     font-family: monospace;
-    color: #caffca;
+    color: #b7ffb7;
 }
 
+/* Title */
 h1 {
     text-align: center;
     margin-top: 20px;
-    letter-spacing: 3px;
-    animation: flicker 3s infinite;
+    font-size: 22px;
+    letter-spacing: 6px;
+    font-weight: normal;
+    opacity: 0.9;
+    animation: flicker 4s infinite;
 }
 
+/* Stage (everything lives here) */
 #stage {
     position: absolute;
     width: 100vw;
@@ -20,25 +25,53 @@ h1 {
     overflow: hidden;
 }
 
+/* Vase entities */
 .vase {
     position: absolute;
     width: 140px;
     pointer-events: none;
-    filter: contrast(130%) brightness(85%);
-    transition: transform 0.1s linear;
+    filter: contrast(140%) brightness(80%) saturate(120%);
+    transform-origin: center;
+    will-change: transform, left, top;
 }
 
+/* Whisper text */
 #whisper {
     position: absolute;
-    bottom: 10px;
+    bottom: 14px;
     width: 100%;
     text-align: center;
-    font-size: 14px;
-    opacity: 0.6;
+    font-size: 13px;
+    opacity: 0.5;
+    letter-spacing: 1px;
 }
 
+/* Subtle vignette for unease */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%);
+}
+
+/* Flicker effect */
 @keyframes flicker {
-    0%,100% {opacity:1;}
-    50% {opacity:0.3;}
+    0%, 100% { opacity: 1; }
+    45% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+    55% { opacity: 0.3; }
 }
 
+/* Slight global noise feeling (optional vibe layer) */
+body::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("gifnumber1.gif");
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
