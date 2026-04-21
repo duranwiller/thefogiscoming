@@ -147,7 +147,7 @@ function startExperience() {
         }, 800);
     }, 15000);
 
-    setInterval(moveGif, 2500 + Math.random() * 2000);
+    setInterval(moveGif, 600 + Math.random() * 800);
 }
 
 /* -------------------------
