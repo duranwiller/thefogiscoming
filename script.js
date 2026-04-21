@@ -1,56 +1,89 @@
+const stage = document.getElementById("stage");
 const whispers = [
-"it shouldn't have this many versions",
-"which one is the original",
-"they are all looking at you",
-"you only uploaded one image",
-"why are there five now",
-"it duplicated itself",
-"stop refreshing"
+"you only uploaded one file",
+"why are there more now",
+"it is copying itself",
+"this is not how images work",
+"stop refreshing",
+"they are not identical",
+"look closely"
 ];
 
 const titles = [
-"THE VESSEL IS NOT CONSISTENT",
-"THE VESSEL MULTIPLIES",
-"THE VESSEL IS COPYING",
-"THERE WERE NOT THIS MANY",
-"DO YOU REMEMBER UPLOADING THESE"
+"THERE WAS ONLY ONE",
+"IT DUPLICATED",
+"IT IS SPREADING",
+"THE FILE CHANGED",
+"THIS IS NOT STATIC"
 ];
 
-// change whisper text
+// change text
 setInterval(() => {
 document.getElementById("whisper").innerText =
 whispers[Math.floor(Math.random() * whispers.length)];
 }, 4000);
 
-// change title
 setInterval(() => {
 document.getElementById("title").innerText =
 titles[Math.floor(Math.random() * titles.length)];
 }, 7000);
 
-// occasional full-screen intrusion
+// bouncing movement for main vase
+let dx = 2;
+let dy = 2;
+const main = document.getElementById("mainVase");
+
+function moveMain() {
+let rect = main.getBoundingClientRect();
+
+```
+if (rect.left <= 0 || rect.right >= window.innerWidth) dx *= -1;
+if (rect.top <= 0 || rect.bottom >= window.innerHeight) dy *= -1;
+
+main.style.left = (main.offsetLeft + dx) + "px";
+main.style.top = (main.offsetTop + dy) + "px";
+
+requestAnimationFrame(moveMain);
+```
+
+}
+moveMain();
+
+// duplicate spawning
+function spawnVase() {
+const img = document.createElement("img");
+img.src = "vase.png";
+img.className = "vase";
+
+```
+img.style.left = Math.random() * window.innerWidth + "px";
+img.style.top = Math.random() * window.innerHeight + "px";
+img.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`;
+
+stage.appendChild(img);
+
+// slight drifting motion
+let driftX = (Math.random() - 0.5) * 2;
+let driftY = (Math.random() - 0.5) * 2;
+
+function drift() {
+    img.style.left = (img.offsetLeft + driftX) + "px";
+    img.style.top = (img.offsetTop + driftY) + "px";
+    requestAnimationFrame(drift);
+}
+drift();
+```
+
+}
+
+// spawn more over time
 setInterval(() => {
-const intrusion = document.getElementById("intrusion");
-intrusion.style.opacity = 0.25;
+spawnVase();
+}, 2000);
 
-```
+// escalation
 setTimeout(() => {
-    intrusion.style.opacity = 0;
-}, 150);
-```
-
-}, 9000);
-
-// subtle mouse tracking (makes it feel reactive)
-document.addEventListener("mousemove", (e) => {
-const vase = document.getElementById("mainVase");
-let x = (e.clientX / window.innerWidth - 0.5) * 20;
-let y = (e.clientY / window.innerHeight - 0.5) * 20;
-vase.style.transform = `translate(${x}px, ${y}px)`;
-});
-
-// delayed escalation
-setTimeout(() => {
-document.getElementById("whisper").innerText =
-"you stayed long enough to see all of them";
-}, 30000);
+setInterval(() => {
+spawnVase();
+}, 500);
+}, 20000);
