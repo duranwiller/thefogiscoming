@@ -1,72 +1,63 @@
 const stage = document.getElementById("stage");
 const gif = document.getElementById("randomGif");
+const enterBtn = document.getElementById("enterBtn");
+const gate = document.getElementById("gate");
 
-// ------------------------------
-// WHISPERS
-// ------------------------------
-const whispers = [
-    "YASHAS HELP",
-    "there are more than before",
-    "you did not create this many",
-    "they are moving independently",
-    "do not focus on one",
-    "they are not synced",
-    "something is wrong with the copies"
-];
+let unlocked = false;
 
-const titles = [
-    "THERE WAS ONLY ONE",
-    "IT SHOULDN'T HAVE BEEN ME",
-    "THEY ARE SPLITTING",
-    "ITS ALL YOUR FAULT YASHAS",
-    "DO NOT COUNT THEM"
-];
-
-setInterval(() => {
-    document.getElementById("whisper").innerText =
-        whispers[Math.floor(Math.random() * whispers.length)];
-}, 3000);
-
-setInterval(() => {
-    document.getElementById("title").innerText =
-        titles[Math.floor(Math.random() * titles.length)];
-}, 6000);
-
-// ------------------------------
-// AUDIO SYSTEM
-// ------------------------------
+/* -------------------------
+   SOUND SYSTEM
+------------------------- */
 const sounds = [
     "sounds/sound1.mp3",
     "sounds/sound2.mp3",
     "sounds/sound3.mp3"
 ];
 
-const activeSounds = [];
-
-// play a looping ambient sound (controlled)
-function playSound() {
+function playRandomSound() {
     const src = sounds[Math.floor(Math.random() * sounds.length)];
     const audio = new Audio(src);
 
+    audio.volume = 0.25;
     audio.loop = true;
-    audio.volume = 0.2;
-
-    audio.play().catch(() => {
-        // autoplay restrictions safe fail
-    });
-
-    activeSounds.push(audio);
-
-    // limit number of overlapping sounds (prevents chaos crash)
-    if (activeSounds.length > 6) {
-        const old = activeSounds.shift();
-        old.pause();
-    }
+    audio.play().catch(() => {});
 }
 
-// ------------------------------
-// VASE SYSTEM
-// ------------------------------
+/* -------------------------
+   TEXT SYSTEM
+------------------------- */
+const whispers = [
+    "it is not staying still",
+    "there are more than before",
+    "they are multiplying",
+    "do not focus on one",
+    "yashas it is all at your fault",
+    "something is wrong"
+];
+
+const titles = [
+    "THERE WAS ONLY ONE",
+    "IT IS MULTIPLYING",
+    "YASAHS WHY WHY W̶̧̛̜̪͚̝̮̤̜̳͕̤̓̎̒̎́̾͆͑̿͂̓̀́͜͝H̵̡͚̜͓̼͎̞̟̰̗̺̱̯͌͐̈́͐ͅY̷̢̨̜͉͈̟͋͑̾̈͊̅͜͝",
+    "IT IS NOT STABLE",
+    "DO NOT COUNT THEM"
+];
+
+function startTextLoop() {
+    setInterval(() => {
+        document.getElementById("whisper").innerText =
+            whispers[Math.floor(Math.random() * whispers.length)];
+    }, 3000);
+
+    setInterval(() => {
+        document.getElementById("title").innerText =
+            titles[Math.floor(Math.random() * titles.length)];
+    }, 6000);
+}
+
+/* -------------------------
+   VASE SYSTEM
+------------------------- */
 function createVase(x, y, scale = 1) {
     const img = document.createElement("img");
     img.src = "vase.png";
@@ -105,36 +96,12 @@ function createVase(x, y, scale = 1) {
 
     animate();
 
-    // 🔊 SOUND TRIGGER PER SPAWN
-    playSound();
+    playRandomSound(); // SOUND ON SPAWN
 }
 
-// initial vase
-createVase(window.innerWidth / 2, window.innerHeight / 2, 1.6);
-
-// spawn system
-setInterval(() => {
-    createVase(
-        Math.random() * window.innerWidth,
-        Math.random() * window.innerHeight,
-        0.5 + Math.random() * 1.5
-    );
-}, 2000);
-
-// escalation
-setTimeout(() => {
-    setInterval(() => {
-        createVase(
-            Math.random() * window.innerWidth,
-            Math.random() * window.innerHeight,
-            0.3 + Math.random() * 2
-        );
-    }, 800);
-}, 15000);
-
-// ------------------------------
-// RANDOM GIF
-// ------------------------------
+/* -------------------------
+   GIF SYSTEM
+------------------------- */
 function moveGif() {
     const x = Math.random() * (window.innerWidth - 160);
     const y = Math.random() * (window.innerHeight - 160);
@@ -149,4 +116,48 @@ function moveGif() {
     }, 500);
 }
 
-setInterval(moveGif, 2500 + Math.random() * 2000);
+/* -------------------------
+   START EXPERIENCE
+------------------------- */
+function startExperience() {
+
+    startTextLoop();
+
+    createVase(
+        window.innerWidth / 2,
+        window.innerHeight / 2,
+        1.6
+    );
+
+    setInterval(() => {
+        createVase(
+            Math.random() * window.innerWidth,
+            Math.random() * window.innerHeight,
+            0.5 + Math.random() * 1.5
+        );
+    }, 2000);
+
+    setTimeout(() => {
+        setInterval(() => {
+            createVase(
+                Math.random() * window.innerWidth,
+                Math.random() * window.innerHeight,
+                0.3 + Math.random() * 2
+            );
+        }, 800);
+    }, 15000);
+
+    setInterval(moveGif, 2500 + Math.random() * 2000);
+}
+
+/* -------------------------
+   GATE UNLOCK
+------------------------- */
+enterBtn.addEventListener("click", () => {
+    gate.style.display = "none";
+    unlocked = true;
+
+    document.getElementById("whisper").innerText = "it is now listening";
+
+    startExperience();
+});
